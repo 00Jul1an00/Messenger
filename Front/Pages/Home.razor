@@ -1,0 +1,65 @@
+﻿@page "/"
+@inject HttpClient Http
+
+<PageTitle>Home</PageTitle>
+<MessagesList @ref="_messagesListComponent" />
+
+<div class="form-group">
+    <label>Введите сообщение:</label>
+    <input @bind="MessageText" class="form-control" placeholder="Например: Hello, World!" />
+</div>
+
+<button class="btn btn-primary mt-2" @onclick="SendMessageToDb">Отправить</button>
+
+@if (!string.IsNullOrEmpty(StatusMessage))
+{
+    <div class="alert @(IsSuccess ? "alert-success" : "alert-danger") mt-3">
+        @StatusMessage
+    </div>
+}
+
+@code {
+
+    private string MessageText { get; set; } = "";
+    private string StatusMessage { get; set; } = "";
+    private bool IsSuccess { get; set; } = false;
+
+    private MessagesList? _messagesListComponent;
+
+    private async Task SendMessageToDb()
+    {
+        if (string.IsNullOrWhiteSpace(MessageText))
+        {
+            StatusMessage = "Пожалуйста, введите текст сообщения.";
+            IsSuccess = false;
+            return;
+        }
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/message/send", MessageText);
+
+            if (response.IsSuccessStatusCode)
+            {
+                StatusMessage = "✅ Сообщение успешно отправлено и записано в БД!";
+                IsSuccess = true;
+                MessageText = "";
+
+                if(_messagesListComponent != null)
+                {
+                    await _messagesListComponent.RefreshAsync();
+                }
+            }
+            else
+            {
+                StatusMessage = $"❌ Ошибка от сервера: {response.StatusCode}";
+                IsSuccess = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"❌ Ошибка соединения: {ex.Message}";
+            IsSuccess = false;
+        }
+    }
+}
