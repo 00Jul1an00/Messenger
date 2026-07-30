@@ -1,9 +1,9 @@
 <Solution>
   <Folder Name="/Frontend/">
-    <Project Path="../Front/Front.csproj" />
+    <Project Path="Front/Front.csproj" />
   </Folder>
   <Folder Name="/Services/" />
   <Folder Name="/Services/Message/">
-    <Project Path="../MessagesService/MessagesService.csproj" />
+    <Project Path="MessagesService/MessagesService.csproj" />
   </Folder>
 </Solution>
