@@ -1,8 +1,4 @@
-﻿@page "/_messages"
-
-<h3>MessagesList</h3>
-
-@inject HttpClient Http
+﻿@inject HttpClient Http
 
 <div class="messages-container">
     <h3>Список сообщений</h3>
@@ -21,7 +17,7 @@
             {
                 <li class="list-group-item">
                     <div>
-                        <span class="text-muted small">(@msg.Timestamp.ToString("g"))</span>
+                        <span class="text-muted small">(@msg.SendTimestamp.ToString("g"))</span>
                     </div>
                     <div>@msg.Content</div>
                 </li>
@@ -30,28 +26,28 @@
     }
 </div>
 @code {
-    private List<MessageDTO> _messages;
+    private List<Message>? _messages;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadMessages();
+        await LoadMessagesAsync();
     }
 
     public async Task RefreshAsync()
     {
-        await LoadMessages();
+        await LoadMessagesAsync();
         StateHasChanged();
     }
 
-    private async Task LoadMessages()
+    private async Task LoadMessagesAsync()
     {
         try
         {
-            _messages = await Http.GetFromJsonAsync<List<MessageDTO>>("api/message/get");
+            _messages = await Http.GetFromJsonAsync<List<Message>>("api/messages");
         }
         catch (Exception ex)
         {
-            _messages = new List<MessageDTO>();
+            _messages = new List<Message>();
         }
     }
 }

@@ -37,7 +37,7 @@
 
         try
         {
-            var response = await Http.PostAsJsonAsync("api/message/send", MessageText);
+            var response = await Http.PostAsJsonAsync("api/messages", new { Content = MessageText });
 
             if (response.IsSuccessStatusCode)
             {
